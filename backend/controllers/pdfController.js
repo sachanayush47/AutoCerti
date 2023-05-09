@@ -27,7 +27,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
     const page = await browser.newPage();
     await page.goto("http://localhost:5173/print", { waitUntil: "networkidle0" });
-    const { htm, excelData, imageURL, height, width, email, password } = req.body;
+    const { htm, excelData, imageURL, height, width, email, password, title } = req.body;
 
     // Set page configuration
     const divDimensions = await page.evaluate(
@@ -63,7 +63,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
     for (let i = 0; i < excelData.length; ++i) {
         const cert = await Certificate.create({
             issuedBy: req.user.username,
-            title: "Test",
+            title: title,
             email: excelData[i].EMAIL,
         });
 
@@ -99,14 +99,14 @@ export const generatePdf = asyncHandler(async (req, res) => {
             body: fs.createReadStream(`./pdf/${excelData[i].ID}.pdf`),
         };
 
-        let res = await driveService.files.create({
+        let drivRes = await driveService.files.create({
             resource: fileMetaData,
             media: media,
             fields: "id",
         });
 
         driveService.permissions.create({
-            fileId: res.data.id,
+            fileId: drivRes.data.id,
             requestBody: {
                 role: "reader",
                 type: "anyone",
@@ -114,7 +114,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
         });
 
         const webViewLink = await driveService.files.get({
-            fileId: res.data.id,
+            fileId: drivRes.data.id,
             fields: "webViewLink",
         });
 
@@ -124,8 +124,8 @@ export const generatePdf = asyncHandler(async (req, res) => {
         const mailOptions = {
             from: `"${req.user.name}" <${req.user.email}>`,
             to: excelData[i].EMAIL,
-            subject: "You are awesome",
-            text: "But dumb as well",
+            subject: title,
+            // text: "But dumb as well",
             html: `<a href=${webViewLink.data.webViewLink}>Download</a>`,
             // attachments: [
             //     {
