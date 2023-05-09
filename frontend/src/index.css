@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* .ql-container {
+    background: url("./assets/pngwing.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding: 50px;
+    width: 740;
+    height: 500px;
+} */
+
+.editor {
+    width: 900px;
+}
