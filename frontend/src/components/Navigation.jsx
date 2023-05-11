@@ -10,7 +10,7 @@ export default function Navigation() {
     const signOut = async (e) => {
         e.preventDefault();
         await logout();
-        navigate("/");
+        navigate("/login");
     };
 
     return (

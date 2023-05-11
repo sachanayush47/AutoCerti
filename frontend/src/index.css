@@ -2,19 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: cornflowerblue;
+    border: transparent;
+}
+
+::-webkit-resizer {
+    width: 4px;
+}
+
 * {
     margin: 0;
     padding: 0;
 }
 
-/* .ql-container {
-    background: url("./assets/pngwing.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    padding: 50px;
-    width: 740;
-    height: 500px;
-} */
+.ql-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: snow;
+}
+
+#carousel {
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+#carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.ql-editor img {
+    height: 200px;
+}
+
+#carousel .slide {
+    display: inline-block;
+}
+
+#sidebar {
+    height: 682px;
+    overflow-y: scroll;
+}
+
+#sidebar::-webkit-scrollbar {
+    /* display: none; */
+    color: white;
+}
 
 .editor {
     width: 900px;

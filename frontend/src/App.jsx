@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Outlet, createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 
@@ -59,7 +58,6 @@ function App() {
     return (
         <div className="mx-auto">
             <ToastContainer theme="dark" />
-
             <RouterProvider router={router} />
         </div>
     );

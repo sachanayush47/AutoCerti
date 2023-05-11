@@ -13,7 +13,140 @@ const SCOPES = [
     "https://www.googleapis.com/auth/drive.metadata",
 ];
 
+export const preview = asyncHandler(async (req, res) => {
+    const { htm, imageURL, height, width, paddingTop, paddingBottom, paddingLeft, paddingRight } =
+        req.body;
+
+    if (!(htm && excelData && imageURL && height && email && password && title)) {
+        res.status(400);
+        throw new Error("Missing fields");
+    }
+
+    const browser = await puppeteer.launch({
+        headless: false,
+    });
+
+    const page = await browser.newPage();
+    await page.goto("http://localhost:5173/print", { waitUntil: "networkidle0" });
+
+    // Set page configuration
+    const divDimensions = await page.evaluate(
+        (imageURL, height, width, paddingTop, paddingBottom, paddingLeft, paddingRight) => {
+            const div = document.getElementsByClassName("ql-container")[0];
+            div.style.background = `url(${imageURL})`;
+            div.style.backgroundSize = "contain";
+            div.style.backgroundRepeat = "no-repeat";
+            div.style.height = `${height}px`;
+            div.style.width = `${width}px`;
+            div.style.paddingTop = `${paddingTop}px`;
+            div.style.paddingBottom = `${paddingBottom}px`;
+            div.style.paddingLeft = `${paddingLeft}px`;
+            div.style.paddingRight = `${paddingRight}px`;
+            return {
+                width: div.offsetWidth,
+                height: div.offsetHeight,
+            };
+        },
+        imageURL,
+        height,
+        width,
+        paddingTop,
+        paddingBottom,
+        paddingLeft,
+        paddingRight
+    );
+
+    let temp = htm;
+
+    // Generate pdf
+    for (let i = 0; i < excelData.length; ++i) {
+        await page.evaluate((temp) => {
+            document.getElementsByClassName("ql-editor")[0].innerHTML = JSON.parse(temp);
+        }, temp);
+
+        await page.addStyleTag({
+            content: `@page { size:${divDimensions.width + 2}px ${divDimensions.height + 2}px; }`,
+        });
+
+        const screenshotBuffer = await page.pdf({
+            printBackground: true,
+            width: `${divDimensions.width}px`,
+            height: `${divDimensions.height}px`,
+        });
+
+        fs.writeFileSync(`./pdf/${Date.now()}.pdf`, screenshotBuffer);
+
+        const webViewLink = await driveService.files.get({
+            fileId: drivRes.data.id,
+            fields: "webViewLink",
+        });
+
+        await Certificate.findByIdAndUpdate(cert.id, { url: webViewLink.data.webViewLink });
+
+        // Send mail
+        const mailOptions = {
+            from: `"${req.user.name}" <${req.user.email}>`,
+            to: excelData[i].EMAIL,
+            subject: title,
+            // text: "But dumb as well",
+            html: `<a href=${webViewLink.data.webViewLink}>Download</a>`,
+            // attachments: [
+            //     {
+            //         filename: `${excelData[i].EMAIL}.pdf`,
+            //         path: `./${excelData[i].EMAIL}.pdf`,
+            //     },
+            // ],
+        };
+
+        let transporter = nodemailer.createTransport({
+            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: email,
+                pass: password,
+            },
+        });
+
+        try {
+            let info = await transporter.sendMail(mailOptions);
+            console.log(info.messageId);
+        } catch (error) {
+            res.status(401);
+            await browser.close();
+            throw new Error(error);
+        }
+
+        temp = htm;
+    }
+
+    await browser.close();
+    res.status(200).sendFile();
+    fs.unlinkSync(`./pdf/${excelData[i].ID}.pdf`);
+});
+
 export const generatePdf = asyncHandler(async (req, res) => {
+    const {
+        htm,
+        excelData,
+        imageURL,
+        height,
+        width,
+        email,
+        password,
+        title,
+        paddingTop,
+        paddingBottom,
+        paddingLeft,
+        paddingRight,
+    } = req.body;
+
+    if (!(htm && excelData && imageURL && height && email && password && title)) {
+        res.status(400);
+        throw new Error("Missing fields");
+    }
+
     const auth = new google.auth.GoogleAuth({
         keyFile: key,
         scopes: SCOPES,
@@ -27,17 +160,20 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
     const page = await browser.newPage();
     await page.goto("http://localhost:5173/print", { waitUntil: "networkidle0" });
-    const { htm, excelData, imageURL, height, width, email, password, title } = req.body;
 
     // Set page configuration
     const divDimensions = await page.evaluate(
-        (imageURL, height, width) => {
+        (imageURL, height, width, paddingTop, paddingBottom, paddingLeft, paddingRight) => {
             const div = document.getElementsByClassName("ql-container")[0];
             div.style.background = `url(${imageURL})`;
             div.style.backgroundSize = "contain";
             div.style.backgroundRepeat = "no-repeat";
             div.style.height = `${height}px`;
             div.style.width = `${width}px`;
+            div.style.paddingTop = `${paddingTop}px`;
+            div.style.paddingBottom = `${paddingBottom}px`;
+            div.style.paddingLeft = `${paddingLeft}px`;
+            div.style.paddingRight = `${paddingRight}px`;
             return {
                 width: div.offsetWidth,
                 height: div.offsetHeight,
@@ -45,7 +181,11 @@ export const generatePdf = asyncHandler(async (req, res) => {
         },
         imageURL,
         height,
-        width
+        width,
+        paddingTop,
+        paddingBottom,
+        paddingLeft,
+        paddingRight
     );
 
     // Get variables
@@ -166,12 +306,13 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
 export const verifyCertificate = asyncHandler(async (req, res) => {
     const id = req.params.id;
+    console.log(req.params);
     const cert = await Certificate.findById(id);
 
     if (!cert) {
         res.status(400);
         throw new Error("Invalid Certificate ID");
-    } else res.json({ message: cert });
+    } else res.status(200).json({ message: cert });
 });
 
 export const getHistory = asyncHandler(async (req, res) => {
