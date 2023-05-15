@@ -17,6 +17,15 @@
     width: 4px;
 }
 
+.ql-container img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 200px;
+    width: 200px;
+    object-fit: contain;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -49,7 +58,7 @@
 }
 
 #sidebar {
-    height: 682px;
+    height: 730px;
     overflow-y: scroll;
 }
 
@@ -60,4 +69,8 @@
 
 .editor {
     width: 900px;
+}
+
+#photoid {
+    object-fit: contain;
 }

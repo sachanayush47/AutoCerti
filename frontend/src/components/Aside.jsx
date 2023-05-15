@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { notifyError } from "../utils/toastify";
 
-const Aside = ({ imageURL, setImageURL }) => {
+const Aside = ({ imageURL, setImageURL, top, left, size }) => {
     const [excelData, setExcelData] = useState();
 
     const [title, setTitle] = useState();
@@ -21,7 +21,6 @@ const Aside = ({ imageURL, setImageURL }) => {
     const excelInputRef = useRef();
 
     useEffect(() => {
-        console.log("im");
         const qlContainer = document.getElementsByClassName("ql-container")[0];
         qlContainer.style.background = `url(${imageURL})`;
         qlContainer.style.backgroundSize = "contain";
@@ -51,6 +50,9 @@ const Aside = ({ imageURL, setImageURL }) => {
                 paddingBottom,
                 paddingLeft,
                 paddingRight,
+                top,
+                left,
+                size,
             });
         } catch (error) {
             notifyError(error.response.data.err);
@@ -253,7 +255,7 @@ const Aside = ({ imageURL, setImageURL }) => {
                                     marginBottom: "2px",
                                 }}
                             >
-                                P-Rigth
+                                P-Right
                             </div>
                             <input
                                 onChange={(e) => setPaddingRight(e.target.value)}
