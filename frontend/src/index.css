@@ -34,7 +34,7 @@
 .ql-toolbar {
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 40;
     background-color: snow;
 }
 
@@ -58,7 +58,7 @@
 }
 
 #sidebar {
-    height: 730px;
+    height: 800px;
     overflow-y: scroll;
 }
 
@@ -73,4 +73,8 @@
 
 #photoid {
     object-fit: contain;
+}
+
+#qrcode {
+    image-rendering: pixelated;
 }

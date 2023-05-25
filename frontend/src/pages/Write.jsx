@@ -4,6 +4,8 @@ import ReactQuill from "react-quill";
 import Template from "../components/Template";
 
 import temp4 from "../assets/temp4.png";
+import qrcode from "../assets/qrcode.png";
+
 import Aside from "../components/Aside";
 
 const modules = {
@@ -37,10 +39,18 @@ const Write = () => {
         "<p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><h1 class='ql-align-center'><strong>{NAME}</strong></h1><p class='ql-align-center'>_______________________________________________</p><p class='ql-align-center'><br></p><p class='ql-align-center'><strong>for his/her active participation during the conduct of this event held on XYZ (date) organized by the University Institute of Engineering and Technology, Kurukshetra University, Kurukshetra</strong></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p class='ql-align-center'> <strong style='color: rgb(136, 136, 136);'>Certificate ID: {ID}</strong></p>"
     );
 
+    // Background image (template)
     const [imageURL, setImageURL] = useState(temp4);
+
+    // For PhotoID
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
     const [size, setSize] = useState(200);
+
+    // For QR Code
+    const [qrTop, setQrTop] = useState(0);
+    const [qrLeft, setQrLeft] = useState(0);
+    const [qrSize, setQrSize] = useState(200);
 
     useEffect(() => {
         const photoid = document.getElementById("photoid");
@@ -53,20 +63,38 @@ const Write = () => {
         photoid.style.width = `${size}px`;
     }, [top, left, size]);
 
+    useEffect(() => {
+        const qrcodeImg = document.getElementById("qrcode");
+
+        if (!qrcodeImg) return;
+
+        qrcodeImg.style.top = `${qrTop}px`;
+        qrcodeImg.style.left = `${qrLeft}px`;
+        qrcodeImg.style.height = `${qrSize}px`;
+        qrcodeImg.style.width = `${qrSize}px`;
+    }, [qrTop, qrLeft, qrSize]);
+
     const setPhotoId = () => {
         let i = document.createElement("img");
         i.setAttribute("id", "photoid");
         i.setAttribute("referrerpolicy", "no-referrer");
         i.src = "https://lh3.googleusercontent.com/d/1LDyDOnA4voFH42Z2dmWveMK1L3HKauxh";
         const qlContainer = document.getElementsByClassName("ql-editor")[0];
-        console.log(i);
+        qlContainer.appendChild(i);
+    };
+
+    const setQrCode = () => {
+        let i = document.createElement("img");
+        i.setAttribute("id", "qrcode");
+        i.src = qrcode;
+        const qlContainer = document.getElementsByClassName("ql-editor")[0];
         qlContainer.appendChild(i);
     };
 
     return (
         <div>
             <hr />
-            <Template setImageURL={setImageURL} top={top} left={left} size={size} />
+            <Template setImageURL={setImageURL} />
             <div className="relative md:flex" data-dev-hint="container">
                 <Aside imageURL={imageURL} setImageURL={setImageURL} />
 
@@ -100,6 +128,34 @@ const Write = () => {
                             </button>
                         </div>
 
+                        {/* QR Code */}
+                        <div className="flex mb-1">
+                            <input
+                                onChange={(e) => setQrTop(e.target.value)}
+                                type="number"
+                                placeholder="Top"
+                                className="mr-1 px-3 py-3 placeholder-slate-400 text-black relative bg-white rounded-sm text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
+                            />
+                            <input
+                                onChange={(e) => setQrLeft(e.target.value)}
+                                type="number"
+                                placeholder="Left"
+                                className="mr-1 px-3 py-3 placeholder-slate-400 text-black relative bg-white rounded-sm text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
+                            />
+                            <input
+                                onChange={(e) => setQrSize(e.target.value)}
+                                type="number"
+                                placeholder="Size"
+                                className="mr-1 px-3 py-3 placeholder-slate-400 text-black relative bg-white rounded-sm text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
+                            />
+                            <button
+                                onClick={setQrCode}
+                                className="bg-blue-500 w-full text-white active:bg-blue-600 font-bold uppercase text-base px-6 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                                type="button"
+                            >
+                                Set QR Code
+                            </button>
+                        </div>
                         <ReactQuill
                             modules={modules}
                             theme="snow"
