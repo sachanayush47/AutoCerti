@@ -49,6 +49,15 @@ export default function Navigation() {
                                     <span className="ml-2">Verify</span>
                                 </Link>
                             </li>
+                            <li className="nav-item">
+                                <Link
+                                    to="/write"
+                                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                                >
+                                    <i className="fa-brands fa-cloudversify text-lg leading-lg text-white opacity-75"></i>
+                                    <span className="ml-2">Tool</span>
+                                </Link>
+                            </li>
                             {currentUser ? (
                                 <>
                                     <li className="nav-item">
@@ -80,14 +89,14 @@ export default function Navigation() {
                                             </div>
                                         </Link>
                                     </li>
-                                    <li className="nav-item">
+                                    {/* <li className="nav-item">
                                         <Link to="/register">
                                             <div className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75">
                                                 <i className="fa-sharp fa-solid fa-right-from-bracket text-lg leading-lg text-white opacity-75"></i>
                                                 <span className="ml-2">Register</span>
                                             </div>
                                         </Link>
-                                    </li>
+                                    </li> */}
                                 </>
                             )}
                         </ul>

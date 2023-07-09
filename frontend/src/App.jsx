@@ -8,12 +8,13 @@ import "react-quill/dist/quill.snow.css";
 
 import NotFound from "./pages/NotFound";
 import Write from "./pages/Write";
-import Print from "./pages/print";
+import Print from "./pages/Print";
 import Navigation from "./components/Navigation";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Verify from "./pages/Verify";
 import History from "./pages/History";
+import Home from "./pages/Home";
 
 import axios from "axios";
 
@@ -34,7 +35,8 @@ const router = createBrowserRouter([
         path: "/",
         element: <Layout />,
         children: [
-            { path: "/", element: <Write /> },
+            { path: "/", element: <Home /> },
+            { path: "/write", element: <Write /> },
             { path: "/verify", element: <Verify /> },
             { path: "/history", element: <History /> },
             { path: "*", element: <NotFound /> },

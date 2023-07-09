@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (max-width: 900px) {
+    #small-screen-tool {
+        display: initial;
+    }
+    #tool {
+        display: none;
+    }
+}
+
+@media (min-width: 901px) {
+    #small-screen-tool {
+        display: none;
+    }
+    #tool {
+        display: flex;
+    }
+}
+
 ::-webkit-scrollbar {
     width: 4px;
 }

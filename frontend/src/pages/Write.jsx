@@ -1,11 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactQuill from "react-quill";
+import { useLocation } from "react-router-dom";
 
-import Template from "../components/Template";
-
-import temp4 from "../assets/temp4.png";
 import qrcode from "../assets/qrcode.png";
-
 import Aside from "../components/Aside";
 
 const modules = {
@@ -35,12 +32,12 @@ const formats = [
 ];
 
 const Write = () => {
-    const [value, setValue] = useState(
-        "<p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><p class='ql-align-center'><br></p><h1 class='ql-align-center'><strong>{NAME}</strong></h1><p class='ql-align-center'>_______________________________________________</p><p class='ql-align-center'><br></p><p class='ql-align-center'><strong>for his/her active participation during the conduct of this event held on XYZ (date) organized by the University Institute of Engineering and Technology, Kurukshetra University, Kurukshetra</strong></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p class='ql-align-center'> <strong style='color: rgb(136, 136, 136);'>Certificate ID: {ID}</strong></p>"
-    );
+    const state = useLocation().state;
+
+    const [value, setValue] = useState(state ? state.content : "");
 
     // Background image (template)
-    const [imageURL, setImageURL] = useState(temp4);
+    const [imageURL, setImageURL] = useState(state ? state.temp : null);
 
     // For PhotoID
     const [top, setTop] = useState(0);
@@ -54,8 +51,9 @@ const Write = () => {
 
     useEffect(() => {
         const photoid = document.getElementById("photoid");
-
+        console.log("before");
         if (!photoid) return;
+        console.log("after");
 
         photoid.style.top = `${top}px`;
         photoid.style.left = `${left}px`;
@@ -78,7 +76,7 @@ const Write = () => {
         let i = document.createElement("img");
         i.setAttribute("id", "photoid");
         i.setAttribute("referrerpolicy", "no-referrer");
-        i.src = "https://lh3.googleusercontent.com/d/1LDyDOnA4voFH42Z2dmWveMK1L3HKauxh";
+        i.src = "https://lh3.googleusercontent.com/d/1AZte8vCseSWM2smRMIYDBjnPgxRgS_1q";
         const qlContainer = document.getElementsByClassName("ql-editor")[0];
         qlContainer.appendChild(i);
     };
@@ -93,9 +91,9 @@ const Write = () => {
 
     return (
         <div>
-            <hr />
-            <Template setImageURL={setImageURL} />
-            <div className="relative md:flex" data-dev-hint="container">
+            <div id="small-screen-tool"><p className="text-center p-10 mt-40 text-xl">This page is not supported on small screen</p>
+            </div>
+            <div id="tool" className="relative md:flex" data-dev-hint="container">
                 <Aside imageURL={imageURL} setImageURL={setImageURL} />
 
                 <main id="content" className="flex flex-col p-1">
