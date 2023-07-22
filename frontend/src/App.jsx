@@ -15,6 +15,7 @@ import Register from "./pages/Register";
 import Verify from "./pages/Verify";
 import History from "./pages/History";
 import Home from "./pages/Home";
+import Account from "./pages/Account";
 
 import axios from "axios";
 
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
     {
         path: "/print",
         element: <Print />,
+    },
+    {
+        path: "/account",
+        element: <Account />,
     },
     {
         path: "/login",

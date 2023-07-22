@@ -3,9 +3,10 @@ import fs from "fs";
 import asyncHandler from "express-async-handler";
 import nodemailer from "nodemailer";
 import QRCode from "qrcode";
+import { google } from "googleapis";
 
 import Certificate from "../models/Certificate.js";
-import { google } from "googleapis";
+import User from "../models/User.js";
 
 const key = "./autocerti-3b574bd12097.json";
 
@@ -16,10 +17,20 @@ const SCOPES = [
     "https://www.googleapis.com/auth/drive.metadata",
 ];
 
+// To check all the images are completly loaded on the page.
 function imagesHaveLoaded() {
     return Array.from(document.images).every((i) => i.complete);
 }
 
+// REGREX for email validation
+function isValidEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+}
+
+// @desc    Creates certificate PDF, send emails and deducted credits
+// @route   POST /api/pdf/screenshot
+// @access  Private
 export const generatePdf = asyncHandler(async (req, res) => {
     const {
         htm,
@@ -36,6 +47,11 @@ export const generatePdf = asyncHandler(async (req, res) => {
         paddingRight,
     } = req.body;
 
+    // Checking if user have enough credits.
+    if (req.user.credit < excelData.length) {
+        throw new Error("Insufficient credits, please buy credits");
+    }
+
     // Mandatory data fields
     if (!(htm && excelData && imageURL && height && width && email && password && title)) {
         res.status(400);
@@ -51,7 +67,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    await page.goto("http://localhost:5173/print", { waitUntil: "networkidle0" });
+    await page.goto("http://localhost:5173/print", { timeout: 0, waitUntil: "networkidle0" });
 
     // Setting page configuration
     const divDimensions = await page.evaluate(
@@ -80,7 +96,12 @@ export const generatePdf = asyncHandler(async (req, res) => {
         paddingRight
     );
 
-    // Getting variables
+    // Setting PDF page width and height
+    await page.addStyleTag({
+        content: `@page { size:${divDimensions.width + 2}px ${divDimensions.height + 2}px; }`,
+    });
+
+    // Getting variables of PDF
     let temp = htm;
     const regex = /{([^}]+)}/g;
     const matches = [];
@@ -90,8 +111,16 @@ export const generatePdf = asyncHandler(async (req, res) => {
         matches.push(match[1]);
     }
 
+    let creditsUsed = 0;
+
     // Looping each row of excelData to create PDF for all.
     for (let i = 0; i < excelData.length; ++i) {
+        if (excelData[i].EMAIL == "" || !excelData[i].EMAIL || !isValidEmail(excelData[i].EMAIL)) {
+            continue;
+        }
+
+        ++creditsUsed;
+
         // Adding entry to Database
         const cert = await Certificate.create({
             issuedBy: req.user.username,
@@ -101,11 +130,12 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
         excelData[i].ID = cert._id;
 
-        // Filling data into the HTML
+        // Populating data into the HTML
         for (let j = 0; j < matches.length; ++j) {
             temp = temp.replace(`{${matches[j]}}`, excelData[i][matches[j]]);
         }
 
+        // Create of QR code of certificate ID
         let qrCodeDataUrl;
         function qrCodePromise() {
             return new Promise((resolve, reject) => {
@@ -131,8 +161,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
             });
         }
 
-        const dsa = await qrCodePromise();
-        console.log(dsa);
+        await qrCodePromise();
 
         // Setting PhotoID and QR code if requested by the certificate issuer
         await page.evaluate(
@@ -160,11 +189,6 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
         // Waiting for PhotoID to load
         await page.waitForFunction(imagesHaveLoaded);
-
-        // Setting PDF page width and height
-        await page.addStyleTag({
-            content: `@page { size:${divDimensions.width + 2}px ${divDimensions.height + 2}px; }`,
-        });
 
         // Creating PDF
         const screenshotBuffer = await page.pdf({
@@ -217,8 +241,6 @@ export const generatePdf = asyncHandler(async (req, res) => {
             from: `"${req.user.name}" <${req.user.email}>`,
             to: excelData[i].EMAIL,
             subject: title,
-            // text: "You are Awesome, But dumb as well",
-            // html: `<a href=${webViewLink.data.webViewLink}>Download</a>`,
             html: `<p style="font-family: Arial, Helvetica, sans-serif;">Download your certificate by clicking on the Download button</p>
                     <div style="text-align: center;">
                         <a style="font: bold 20px Arial;
@@ -228,7 +250,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
                             padding: 4px 8px 4px 8px;
                             border-radius: 4px;" href=${webViewLink.data.webViewLink}>Download</a>
                     </div>
-                    <p style="font-family: Arial, Helvetica, sans-serif;">To verify your certificate please click <a style="background-color: blue; text-decoration: none; color: white; padding: 0px 5px;" href="">here</a></p>`,
+                    <p style="font-family: Arial, Helvetica, sans-serif;">To verify your certificate please click <a style="background-color: blue; text-decoration: none; color: white; padding: 0px 5px;" href="https://autocerti-ver.vercel.app/">here</a></p>`,
             // attachments: [
             //     {
             //         filename: `${excelData[i].EMAIL}.pdf`,
@@ -264,16 +286,29 @@ export const generatePdf = asyncHandler(async (req, res) => {
     }
 
     await browser.close();
-    res.status(200).json({ message: "Job successfully completed." });
+
+    const result = await User.findByIdAndUpdate(
+        req.user.id,
+        { $inc: { credit: -creditsUsed } },
+        { new: true }
+    );
+
+    res.status(200).json({ message: `Job successfully completed, ${creditsUsed} used` });
 });
 
 export const verifyCertificate = asyncHandler(async (req, res) => {
+    res.status(404);
     const id = req.params.id;
-    console.log(req.params);
+
+    const isValidRegrexId = mongoose.Types.ObjectId.isValid(id);
+    if (!isValidRegrexId) {
+        res.status(400);
+        throw new Error("Invalid Certificate ID");
+    }
+
     const cert = await Certificate.findById(id);
 
     if (!cert) {
-        res.status(400);
         throw new Error("Invalid Certificate ID");
     } else res.status(200).json({ message: cert });
 });

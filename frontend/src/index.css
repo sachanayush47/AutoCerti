@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@media (max-width: 900px) {
+@media (max-width: 1051px) {
     #small-screen-tool {
         display: initial;
     }
@@ -11,7 +11,7 @@
     }
 }
 
-@media (min-width: 901px) {
+@media (min-width: 1050px) {
     #small-screen-tool {
         display: none;
     }
