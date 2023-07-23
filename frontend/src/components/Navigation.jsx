@@ -46,22 +46,13 @@ export default function Navigation() {
                                     <span className="ml-2">Verify</span>
                                 </Link>
                             </li>
-                            <li className="nav-item" onClick={closeNavigationBar}>
+                            <li className="nav-item mr-3" onClick={closeNavigationBar}>
                                 <Link
                                     to="/write"
                                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                                 >
                                     <i className="fa-brands fa-cloudversify text-lg leading-lg text-white opacity-75"></i>
                                     <span className="ml-2">Tool</span>
-                                </Link>
-                            </li>
-                            <li className="nav-item" onClick={closeNavigationBar}>
-                                <Link
-                                    to="/history"
-                                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
-                                >
-                                    <i className="fa-sharp fa-solid fa-clock-rotate-left text-lg leading-lg text-white opacity-75"></i>
-                                    <span className="ml-2">History</span>
                                 </Link>
                             </li>
                             <li

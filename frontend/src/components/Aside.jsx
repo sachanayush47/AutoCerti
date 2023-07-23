@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import * as xlsx from "xlsx";
 import axios from "axios";
 
-import { notifyError } from "../utils/toastify";
+import { toast } from "react-toastify";
+import { notifyError, notifySuccess, updateToast } from "../utils/toastify";
 
 const Aside = ({ imageURL, setImageURL, top, left, size }) => {
     const [excelData, setExcelData] = useState();
@@ -37,7 +38,8 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
         const htm = document.getElementsByClassName("ql-editor")[0].innerHTML;
         console.log(htm);
         try {
-            await axios.post("http://localhost:4000/api/pdf/screenshot", {
+            const id = toast.loading("Working, you may close this window");
+            const res = await axios.post("http://localhost:4000/api/pdf/screenshot", {
                 htm: JSON.stringify(htm),
                 excelData,
                 imageURL,
@@ -54,6 +56,8 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
                 left,
                 size,
             });
+
+            updateToast(id, res.data.message, "success");
         } catch (error) {
             notifyError(error.response.data.err);
         }
@@ -89,59 +93,9 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
 
     return (
         <>
-            <input type="checkbox" id="menu-open" className="hidden" />
-
-            <header
-                className="bg-gray-800 text-gray-100 flex justify-between md:hidden"
-                data-dev-hint="mobile menu bar"
-            >
-                <a
-                    href="#"
-                    className="block ml-8 p-4 text-white font-bold whitespace-nowrap truncate"
-                >
-                    Toolbar
-                </a>
-
-                <label
-                    for="menu-open"
-                    id="mobile-menu-button"
-                    className="m-2 p-2 mr-3 focus:outline-none hover:text-white hover:bg-gray-700 rounded-md"
-                >
-                    <svg
-                        id="menu-open-icon"
-                        className="h-6 w-6 mr-0 transition duration-200 ease-in-out"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"
-                        />
-                    </svg>
-                    <svg
-                        id="menu-close-icon"
-                        className="h-6 w-6 transition duration-200 ease-in-out"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"
-                        />
-                    </svg>
-                </label>
-            </header>
             <aside
                 id="sidebar"
-                className="z-50 bg-blue-900 text-gray-100 w-36 space-y-6 pt-2 px-0 absolute inset-y-0 left-0 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex md:flex-col md:justify-between"
+                className="z-50 bg-blue-900 text-gray-100 w-36 space-y-6 pt-2 px-0 inset-y-0 left-0 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex md:flex-col md:justify-between"
                 data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation"
             >
                 <div
@@ -299,19 +253,26 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
                         <div className="mt-3 mb-3 pt-0 mx-3">
                             <button
                                 onClick={() => imageInputRef.current.click()}
-                                className="bg-blue-500 w-full text-white active:bg-blue-600 font-bold uppercase text-base px-6 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                                className="bg-blue-500 w-full text-white active:bg-blue-600 font-bold uppercase text-base px-1 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
                                 type="button"
                             >
-                                Template
+                                Template{" "}
+                                <span className="text-xs normal-case">(png, jpg, jpeg)</span>
+                                <p className="text-xs break-words normal-case">
+                                    {imageInputRef.current?.files[0]?.name}
+                                </p>
                             </button>
                         </div>
                         <div className="mb-3 pt-0 mx-3">
                             <button
                                 onClick={() => excelInputRef.current.click()}
-                                className="bg-blue-500 w-full text-white active:bg-blue-600 font-bold uppercase text-base px-6 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                                className="bg-blue-500 w-full text-white active:bg-blue-600 font-bold uppercase text-base px-1 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
                                 type="button"
                             >
-                                Excel
+                                Excel <span className="text-xs normal-case">(xlsx, xls)</span>
+                                <p className="text-xs break-words normal-case">
+                                    {excelInputRef.current?.files[0]?.name}
+                                </p>
                             </button>
                         </div>
                     </nav>
@@ -323,6 +284,7 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
                         type="file"
                         style={{ display: "none" }}
                         required
+                        accept=".png, .jpeg, .jpg"
                         onChange={handleImageSelect}
                     />
                     <input
@@ -330,6 +292,7 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
                         style={{ display: "none" }}
                         required
                         type="file"
+                        accept=".xlsx, .xls"
                         onChange={readUploadFile}
                     />
                 </nav>

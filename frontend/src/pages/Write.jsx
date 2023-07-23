@@ -32,9 +32,22 @@ const formats = [
 ];
 
 const Write = () => {
-    const state = useLocation().state;
+    // From HomePage template section
+    let state = useLocation().state;
+    const certificateContentFromLs = JSON.parse(localStorage.getItem("certificate-content"));
 
-    const [value, setValue] = useState(state ? state.content : "");
+    let certificateContent;
+    if (state) {
+        certificateContent = state.content;
+    } else if (certificateContentFromLs) {
+        certificateContent = certificateContentFromLs;
+    }
+
+    const [value, setValue] = useState(certificateContent ? certificateContent : "");
+
+    useEffect(() => {
+        localStorage.setItem("certificate-content", JSON.stringify(value));
+    }, [value]);
 
     // Background image (template)
     const [imageURL, setImageURL] = useState(state ? state.temp : null);
@@ -91,7 +104,10 @@ const Write = () => {
 
     return (
         <div>
-            <div id="small-screen-tool"><p className="text-center p-10 mt-40 text-xl">This page is not supported on small screen</p>
+            <div id="small-screen-tool">
+                <p className="text-center p-10 mt-40 text-xl">
+                    This page is not supported on small screen
+                </p>
             </div>
             <div id="tool" className="relative md:flex" data-dev-hint="container">
                 <Aside imageURL={imageURL} setImageURL={setImageURL} />

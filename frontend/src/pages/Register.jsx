@@ -1,15 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundImage from "../assets/register_bg_2.png";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { notifyError } from "../utils/toastify";
+import { AuthContext } from "../context/authContextProvider";
 
 export default function Login() {
     const [name, setName] = useState();
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
 
+    const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (currentUser) {
+            navigate(-1);
+        }
+    }, []);
 
     const onRegister = async (e) => {
         e.preventDefault();

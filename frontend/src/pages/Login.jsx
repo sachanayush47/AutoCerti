@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import BackgroundImage from "../assets/register_bg_2.png";
 import { AuthContext } from "../context/authContextProvider";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { notifyError } from "../utils/toastify";
 
 export default function Login() {
@@ -10,7 +10,13 @@ export default function Login() {
     const [password, setPassword] = useState(null);
 
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext);
+    const { login, currentUser } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (currentUser) {
+            navigate(-1);
+        }
+    }, []);
 
     const onLogin = async (e) => {
         e.preventDefault();

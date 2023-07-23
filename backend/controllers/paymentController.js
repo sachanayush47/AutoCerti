@@ -14,6 +14,11 @@ export const buyCredits = asyncHandler(async (req, res) => {
         throw new Error("Invalid request, count must be a positive number");
     }
 
+    if (count > 999999) {
+        res.status(400);
+        throw new Error("Amount to large");
+    }
+
     const customer = await stripe.customers.create({
         metadata: {
             userId: req.user.id,
@@ -39,9 +44,10 @@ export const buyCredits = asyncHandler(async (req, res) => {
         phone_number_collection: {
             enabled: true,
         },
+
         mode: "payment",
-        success_url: "http://localhost:5173/account",
-        cancel_url: "http://localhost:5173/write",
+        success_url: "http://localhost:5173/account?payment_success=true",
+        cancel_url: "http://localhost:5173/account?payment_failed=true",
     });
 
     res.json({ id: session.id });

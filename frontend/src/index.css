@@ -54,40 +54,29 @@
     top: 0;
     z-index: 40;
     background-color: snow;
+    margin-bottom: 5px;
 }
-
-/* #carousel {
-    width: 100%;
-    overflow-y: hidden;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-
-#carousel::-webkit-scrollbar {
-    display: none;
-} */
 
 .ql-editor img {
     height: 200px;
 }
 
-#carousel .slide {
-    display: inline-block;
+.ql-editor {
+    border-top: groove;
+    border-width: 2px;
+    padding: 0px;
 }
 
 #sidebar {
     height: 800px;
     overflow-y: scroll;
+    position: sticky;
 }
 
-#sidebar::-webkit-scrollbar {
-    /* display: none; */
-    color: white;
-}
-
+/* 
 .editor {
     width: 900px;
-}
+} */
 
 #photoid {
     object-fit: contain;
