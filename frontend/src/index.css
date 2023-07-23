@@ -56,7 +56,7 @@
     background-color: snow;
 }
 
-#carousel {
+/* #carousel {
     width: 100%;
     overflow-y: hidden;
     overflow-x: auto;
@@ -65,7 +65,7 @@
 
 #carousel::-webkit-scrollbar {
     display: none;
-}
+} */
 
 .ql-editor img {
     height: 200px;

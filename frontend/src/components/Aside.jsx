@@ -12,8 +12,8 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
     const [width, setWidth] = useState(900);
     const [paddingTop, setPaddingTop] = useState(0);
     const [paddingBottom, setPaddingBottom] = useState(0);
-    const [paddingLeft, setPaddingLeft] = useState(100);
-    const [paddingRight, setPaddingRight] = useState(100);
+    const [paddingLeft, setPaddingLeft] = useState(0);
+    const [paddingRight, setPaddingRight] = useState(0);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 

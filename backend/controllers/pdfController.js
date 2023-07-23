@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 import nodemailer from "nodemailer";
 import QRCode from "qrcode";
 import { google } from "googleapis";
+import mongoose from "mongoose";
 
 import Certificate from "../models/Certificate.js";
 import User from "../models/User.js";
@@ -287,15 +288,14 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
     await browser.close();
 
-    const result = await User.findByIdAndUpdate(
-        req.user.id,
-        { $inc: { credit: -creditsUsed } },
-        { new: true }
-    );
+    await User.findByIdAndUpdate(req.user.id, { $inc: { credit: -creditsUsed } }, { new: true });
 
     res.status(200).json({ message: `Job successfully completed, ${creditsUsed} used` });
 });
 
+// @desc    Fetches the certificate details using ID
+// @route   GET /api/pdf/verify/:id
+// @access  Public
 export const verifyCertificate = asyncHandler(async (req, res) => {
     res.status(404);
     const id = req.params.id;
@@ -313,6 +313,9 @@ export const verifyCertificate = asyncHandler(async (req, res) => {
     } else res.status(200).json({ message: cert });
 });
 
+// @desc    Get all the certficates issued by admin
+// @route   GET /api/pdf/history
+// @access  Private
 export const getHistory = asyncHandler(async (req, res) => {
     const history = await Certificate.find({ issuedBy: req.user.username }).sort({ _id: -1 });
     res.status(200).json({ message: history });

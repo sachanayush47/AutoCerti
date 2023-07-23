@@ -3,14 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContextProvider";
 
 export default function Navigation() {
-    const { currentUser, logout } = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
     const [navbarOpen, setNavbarOpen] = React.useState(false);
-    const navigate = useNavigate();
 
-    const signOut = async (e) => {
-        e.preventDefault();
-        await logout();
-        navigate("/login");
+    const closeNavigationBar = () => {
+        setNavbarOpen(false);
     };
 
     return (
@@ -40,7 +37,7 @@ export default function Navigation() {
                         id="example-navbar-danger"
                     >
                         <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
-                            <li className="nav-item">
+                            <li className="nav-item" onClick={closeNavigationBar}>
                                 <Link
                                     to="/verify"
                                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
@@ -49,7 +46,7 @@ export default function Navigation() {
                                     <span className="ml-2">Verify</span>
                                 </Link>
                             </li>
-                            <li className="nav-item">
+                            <li className="nav-item" onClick={closeNavigationBar}>
                                 <Link
                                     to="/write"
                                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
@@ -58,47 +55,29 @@ export default function Navigation() {
                                     <span className="ml-2">Tool</span>
                                 </Link>
                             </li>
-                            {currentUser ? (
-                                <>
-                                    <li className="nav-item">
-                                        <Link
-                                            to="/history"
-                                            className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
-                                        >
-                                            <i className="fa-sharp fa-solid fa-clock-rotate-left text-lg leading-lg text-white opacity-75"></i>
-                                            <span className="ml-2">History</span>
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <button
-                                            onClick={signOut}
-                                            className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
-                                        >
-                                            <i className="fa-sharp fa-solid fa-right-from-bracket text-lg leading-lg text-white opacity-75"></i>
-                                            <span className="ml-2">Logout</span>
-                                        </button>
-                                    </li>
-                                </>
-                            ) : (
-                                <>
-                                    <li className="nav-item">
-                                        <Link to="/login">
-                                            <div className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75">
-                                                <i className="fas fa-sign-in text-lg leading-lg text-white opacity-75"></i>
-                                                <span className="ml-2">Login</span>
-                                            </div>
-                                        </Link>
-                                    </li>
-                                    {/* <li className="nav-item">
-                                        <Link to="/register">
-                                            <div className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75">
-                                                <i className="fa-sharp fa-solid fa-right-from-bracket text-lg leading-lg text-white opacity-75"></i>
-                                                <span className="ml-2">Register</span>
-                                            </div>
-                                        </Link>
-                                    </li> */}
-                                </>
-                            )}
+                            <li className="nav-item" onClick={closeNavigationBar}>
+                                <Link
+                                    to="/history"
+                                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                                >
+                                    <i className="fa-sharp fa-solid fa-clock-rotate-left text-lg leading-lg text-white opacity-75"></i>
+                                    <span className="ml-2">History</span>
+                                </Link>
+                            </li>
+                            <li
+                                onClick={closeNavigationBar}
+                                className={`nav-item ${
+                                    currentUser ? "bg-green-500" : "bg-red-500"
+                                }  rounded-md`}
+                            >
+                                <Link
+                                    to="/account"
+                                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                                >
+                                    <i className="fa-sharp fa-solid fa-right-from-bracket text-lg leading-lg text-white opacity-75"></i>
+                                    <span className="ml-2">Account</span>
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </div>

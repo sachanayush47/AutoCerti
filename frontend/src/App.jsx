@@ -41,23 +41,14 @@ const router = createBrowserRouter([
             { path: "/verify", element: <Verify /> },
             { path: "/history", element: <History /> },
             { path: "*", element: <NotFound /> },
+            { path: "/account", element: <Account /> },
+            { path: "/login", element: <Login /> },
+            { path: "/register", element: <Register /> },
         ],
     },
     {
         path: "/print",
         element: <Print />,
-    },
-    {
-        path: "/account",
-        element: <Account />,
-    },
-    {
-        path: "/login",
-        element: <Login />,
-    },
-    {
-        path: "/register",
-        element: <Register />,
     },
 ]);
 

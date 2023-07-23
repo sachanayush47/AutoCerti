@@ -9,6 +9,11 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 export const buyCredits = asyncHandler(async (req, res) => {
     const { count } = req.body;
 
+    if (isNaN(count) || count <= 0) {
+        res.status(400);
+        throw new Error("Invalid request, count must be a positive number");
+    }
+
     const customer = await stripe.customers.create({
         metadata: {
             userId: req.user.id,

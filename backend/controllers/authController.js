@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import Certificate from "../models/Certificate.js";
 
 const signUp = asyncHandler(async (req, res) => {
     const { name, username, password } = req.body;
@@ -64,4 +65,14 @@ const signOut = asyncHandler(async (req, res) => {
     res.clearCookie("access_token", { sameSite: "none", secure: true }).status(200).json();
 });
 
-export { signUp, signIn, signOut };
+const getUser = asyncHandler(async (req, res) => {
+    const user = req.user;
+    const totalIssuedCertificate = await Certificate.countDocuments({
+        issuedBy: user.username,
+    });
+
+    const newUser = { name: user.name, credit: user.credit, totalIssuedCertificate };
+    res.status(200).json(newUser);
+});
+
+export { signUp, signIn, signOut, getUser };
