@@ -290,7 +290,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
     await User.findByIdAndUpdate(req.user.id, { $inc: { credit: -creditsUsed } }, { new: true });
 
-    res.status(200).json({ message: `Job successfully completed, ${creditsUsed} used` });
+    res.status(200).json({ message: `Job successfully completed, ${creditsUsed} credits used` });
 });
 
 // @desc    Fetches the certificate details using ID

@@ -9,8 +9,8 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
     const [excelData, setExcelData] = useState();
 
     const [title, setTitle] = useState();
-    const [height, setHeight] = useState(635);
-    const [width, setWidth] = useState(900);
+    const [height, setHeight] = useState(735);
+    const [width, setWidth] = useState(1000);
     const [paddingTop, setPaddingTop] = useState(0);
     const [paddingBottom, setPaddingBottom] = useState(0);
     const [paddingLeft, setPaddingLeft] = useState(0);

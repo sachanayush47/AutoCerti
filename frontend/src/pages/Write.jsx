@@ -112,7 +112,7 @@ const Write = () => {
             <div id="tool" className="relative md:flex" data-dev-hint="container">
                 <Aside imageURL={imageURL} setImageURL={setImageURL} />
 
-                <main id="content" className="flex flex-col p-1">
+                <main id="content" className="flex flex-col p-1 max-w-5xl">
                     <div className="editor">
                         <div className="flex mb-1">
                             <input

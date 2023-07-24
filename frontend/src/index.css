@@ -22,12 +22,13 @@
 
 ::-webkit-scrollbar {
     width: 4px;
+    height: 4px;
 }
 ::-webkit-scrollbar-track {
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: cornflowerblue;
+    background-color: rgb(0, 23, 66);
     border: transparent;
 }
 
@@ -63,7 +64,6 @@
 
 .ql-editor {
     border-top: groove;
-    border-width: 2px;
     padding: 0px;
 }
 
