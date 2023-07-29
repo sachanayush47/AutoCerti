@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { useLocation } from "react-router-dom";
 
@@ -34,16 +34,8 @@ const formats = [
 const Write = () => {
     // From HomePage template section
     let state = useLocation().state;
-    const certificateContentFromLs = JSON.parse(localStorage.getItem("certificate-content"));
 
-    let certificateContent;
-    if (state) {
-        certificateContent = state.content;
-    } else if (certificateContentFromLs) {
-        certificateContent = certificateContentFromLs;
-    }
-
-    const [value, setValue] = useState(certificateContent ? certificateContent : "");
+    const [value, setValue] = useState(state ? state.content : "");
 
     useEffect(() => {
         localStorage.setItem("certificate-content", JSON.stringify(value));

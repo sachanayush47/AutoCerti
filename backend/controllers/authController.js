@@ -44,7 +44,7 @@ const signIn = asyncHandler(async (req, res) => {
     const user = await User.findOne({ username });
 
     if (user && bcrypt.compareSync(password, user.password)) {
-        const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN_KEY, { expiresIn: "24h" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN_KEY, { expiresIn: "90d" });
         user.password = undefined;
         res.cookie("access_token", token, {
             maxAge: 90 * 24 * 60 * 60 * 1000,

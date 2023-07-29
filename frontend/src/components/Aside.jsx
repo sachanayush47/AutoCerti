@@ -3,7 +3,7 @@ import * as xlsx from "xlsx";
 import axios from "axios";
 
 import { toast } from "react-toastify";
-import { notifyError, notifySuccess, updateToast } from "../utils/toastify";
+import { notifyError, updateToast } from "../utils/toastify";
 
 const Aside = ({ imageURL, setImageURL, top, left, size }) => {
     const [excelData, setExcelData] = useState();
