@@ -124,7 +124,7 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
                             <input
                                 onChange={(e) => setWidth(e.target.value)}
                                 type="number"
-                                defaultValue={900}
+                                defaultValue={1000}
                                 placeholder="Width"
                                 className="px-3 py-3 placeholder-slate-400 text-black relative bg-white rounded-sm text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
                             />
@@ -142,7 +142,7 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
                             <input
                                 onChange={(e) => setHeight(e.target.value)}
                                 type="number"
-                                defaultValue={635}
+                                defaultValue={735}
                                 placeholder="Height"
                                 className="px-3 py-3 placeholder-slate-400 text-black relative bg-white rounded-sm text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
                             />
