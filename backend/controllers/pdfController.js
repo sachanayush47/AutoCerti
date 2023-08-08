@@ -33,6 +33,8 @@ function isValidEmail(email) {
 // @route   POST /api/pdf/screenshot
 // @access  Private
 export const generatePdf = asyncHandler(async (req, res) => {
+    console.log("Request received");
+    
     const {
         htm,
         excelData,
