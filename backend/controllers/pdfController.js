@@ -68,7 +68,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    await page.goto("http://localhost:5173/print", { timeout: 0, waitUntil: "networkidle0" });
+    await page.goto(process.env.CLIENT_URL, { timeout: 0, waitUntil: "networkidle0" });
 
     // Setting page configuration
     const divDimensions = await page.evaluate(
@@ -172,7 +172,26 @@ export const generatePdf = asyncHandler(async (req, res) => {
                 // For PhotoID
                 const photoid = document.getElementById("photoid");
                 if (photoid) {
-                    const idUrl = excelDataRow.PHOTOID.split("=")[1];
+                    function getIdFrom(url) {
+                        var id = "";
+                        var parts = url.split(
+                            /^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/
+                        );
+                        if (url.indexOf("?id=") >= 0) {
+                            id = parts[6].split("=")[1].replace("&usp", "");
+                            return id;
+                        } else {
+                            id = parts[5].split("/");
+                            //Using sort to get the id as it is the longest element.
+                            var sortArr = id.sort(function (a, b) {
+                                return b.length - a.length;
+                            });
+                            id = sortArr[0];
+                            return id;
+                        }
+                    }
+
+                    const idUrl = getIdFrom(excelDataRow.PHOTOID);
                     photoid.src = `https://lh3.googleusercontent.com/d/${idUrl}`;
                 }
 
