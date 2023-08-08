@@ -39,7 +39,7 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
         console.log(htm);
         try {
             const id = toast.loading("Working, you may close this window");
-            const res = await axios.post("http://localhost:4000/api/pdf/screenshot", {
+            const res = await axios.post("/pdf/screenshot", {
                 htm: JSON.stringify(htm),
                 excelData,
                 imageURL,

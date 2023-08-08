@@ -68,7 +68,7 @@ export const generatePdf = asyncHandler(async (req, res) => {
 
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    await page.goto(process.env.CLIENT_URL, { timeout: 0, waitUntil: "networkidle0" });
+    await page.goto(`${process.env.CLIENT_URL}/print`, { timeout: 0, waitUntil: "networkidle0" });
 
     // Setting page configuration
     const divDimensions = await page.evaluate(

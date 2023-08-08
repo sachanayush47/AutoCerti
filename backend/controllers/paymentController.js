@@ -46,8 +46,8 @@ export const buyCredits = asyncHandler(async (req, res) => {
         },
 
         mode: "payment",
-        success_url: "http://localhost:5173/account?payment_success=true",
-        cancel_url: "http://localhost:5173/account?payment_failed=true",
+        success_url: `${process.env.CLIENT_URL}/account?payment_success=true`,
+        cancel_url: `${process.env.CLIENT_URL}http://localhost:5173/account?payment_failed=true`,
     });
 
     res.json({ id: session.id });
