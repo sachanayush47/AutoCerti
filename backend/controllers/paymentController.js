@@ -41,13 +41,13 @@ export const buyCredits = asyncHandler(async (req, res) => {
                 quantity: count,
             },
         ],
-        phone_number_collection: {
-            enabled: true,
-        },
+        // phone_number_collection: {
+        //     enabled: true,
+        // },
 
         mode: "payment",
         success_url: `${process.env.CLIENT_URL}/account?payment_success=true`,
-        cancel_url: `${process.env.CLIENT_URL}http://localhost:5173/account?payment_failed=true`,
+        cancel_url: `${process.env.CLIENT_URL}/account?payment_failed=true`,
     });
 
     res.json({ id: session.id });

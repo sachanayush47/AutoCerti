@@ -95,7 +95,7 @@ const Aside = ({ imageURL, setImageURL, top, left, size }) => {
         <>
             <aside
                 id="sidebar"
-                className="z-50 bg-blue-900 text-gray-100 w-36 space-y-6 pt-2 px-0 inset-y-0 left-0 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex md:flex-col md:justify-between"
+                className="min-w-min z-50 bg-blue-900 text-gray-100 w-36 space-y-6 pt-2 px-0 inset-y-0 left-0 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex md:flex-col md:justify-between"
                 data-dev-hint="sidebar; px-0 for frameless; px-2 for visually inset the navigation"
             >
                 <div
