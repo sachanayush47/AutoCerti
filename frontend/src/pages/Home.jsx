@@ -34,7 +34,8 @@ const Home = () => {
                         </p>
                         <div>
                             <a
-                                href="#"
+                                href="https://youtu.be/vSoFEnWN1kA"
+                                target="_blank"
                                 class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg hover:bg-blue-700
                         bg-blue-800"
                             >
